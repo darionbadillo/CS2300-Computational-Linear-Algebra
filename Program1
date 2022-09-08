@@ -37,3 +37,195 @@ printMatrix('dbadillo_mat2.txt',mat2)
 printMatrix('dbadillo_mat3.txt',mat3)
 printMatrix('dbadillo_mat4.txt',mat4)
 printMatrix('dbadillo_mat5.txt',mat5)
+
+
+# Darion Badillo
+# Assignment 1 - Part 2
+# 9/8/2022
+
+#This function reads a matrix from a file
+def readMatrix(path):
+    f = open(path,'r')
+    a = []
+
+    for line in f:
+        a.append(line.rstrip("\n").split(','))
+    for row in range (len(a)):
+        for column in range(0,len(a[row])):
+            a[row][column] = float(a[row][column])
+        
+    return a
+
+#This function adds two matrices together
+def addMatrices(matA,matB):
+    addedMatrix = matA
+    #If-condition that compares matrices size
+    #if len(matA) == len(matB) and len(matA[0]) == len(matB[0]):
+    if matA == matB:
+        #Adds matrices together
+        for row in range(len(matA)):
+            for column in range(len(matA[0])):
+                addedMatrix[row][column] = matA[row][column] + matB[row][column]
+        return addedMatrix
+    
+    #Returns an empty matrix if the two matrices cannot be added together
+    else:
+        return []
+
+#Prints a matrix to a text file
+def printMatrix(name,matA):
+    with open(name,'w') as newFile:
+        for i in matA:
+            newFile.write(','.join([str(a) for a in i]) + '\n')
+    newFile.close()
+
+#Calls function to read and assign matrix from file 
+mat1 = readMatrix("./dbadillo_mat1.txt")
+mat2 = readMatrix("./dbadillo_mat2.txt")
+mat3 = readMatrix("./dbadillo_mat3.txt")
+mat4 = readMatrix("./dbadillo_mat4.txt")
+mat5 = readMatrix("./dbadillo_mat5.txt")
+
+#Adds two matrices together and then prints to file
+mat11 = addMatrices(mat1,mat1)
+printMatrix('dbadillo_p2_out11.txt',mat11)
+
+mat12 = addMatrices(mat1,mat2)
+printMatrix('dbadillo_p2_out12.txt',mat12)
+
+mat13 = addMatrices(mat1,mat3)
+printMatrix('dbadillo_p2_out13.txt',mat13)
+
+mat14 = addMatrices(mat1,mat4)
+printMatrix('dbadillo_p2_out14.txt',mat14)
+
+mat15 = addMatrices(mat1,mat5)
+printMatrix('dbadillo_p2_out15.txt',mat15)
+
+mat22 = addMatrices(mat2,mat2)
+printMatrix('dbadillo_p2_out22.txt',mat22)
+
+mat23 = addMatrices(mat2,mat3)
+printMatrix('dbadillo_p2_out23.txt',mat23)
+
+mat24 = addMatrices(mat2,mat4)
+printMatrix('dbadillo_p2_out24.txt',mat24)
+
+mat25 = addMatrices(mat2,mat5)
+printMatrix('dbadillo_p2_out25.txt',mat25)
+
+mat33 = addMatrices(mat3,mat3)
+printMatrix('dbadillo_p2_out33.txt',mat33)
+
+mat34 = addMatrices(mat3,mat4)
+printMatrix('dbadillo_p2_out34.txt',mat34)
+
+mat35 = addMatrices(mat3,mat5)
+printMatrix('dbadillo_p2_out35.txt',mat35)
+
+mat44 = addMatrices(mat4,mat4)
+printMatrix('dbadillo_p2_out44.txt',mat44)
+
+mat45 = addMatrices(mat4,mat5)
+printMatrix('dbadillo_p2_out45.txt',mat45)
+
+mat55 = addMatrices(mat5,mat5)
+printMatrix('dbadillo_p2_out55.txt',mat55)
+
+
+# Darion Badillo
+# Assignment 1 - Part 3
+# 9/8/2022
+
+#This function reads a matrix from a file
+def readMatrix(path):
+    f = open(path,'r')
+    a = []
+
+    for line in f:
+        a.append(line.rstrip("\n").split(','))
+        
+    for row in range (len(a)):
+        for column in range(0,len(a[row])):
+            a[row][column] = float(a[row][column])
+        
+    return a
+
+#This function adds two matrices together
+def multiplyMatrices(matA,matB):
+    multipliedMatrix = matB
+    
+    #If-condition that ensures matrices' capability of being multiplied
+    if len(matA) == len(matB[0]):
+        
+        #Multiplies matrices together
+        for i in range(len(matA)):
+            for j in range(len(matB[0])):
+                for k in range(len(matB)):
+                    multipliedMatrix[i][j] += matA[i][k] * matB[k][j]
+                    
+        return multipliedMatrix
+    
+    #Returns an empty matrix if the two matrices cannot be added together
+    else:
+        return []
+
+#Prints a matrix to a text file
+def printMatrix(name,matA):
+    with open(name,'w') as newFile:
+        for i in matA:
+            newFile.write(','.join([str(a) for a in i]) + '\n')
+    newFile.close()
+
+#Calls function to read and assign matrix from file 
+mat1 = readMatrix("./dbadillo_mat1.txt")
+mat2 = readMatrix("./dbadillo_mat2.txt")
+mat3 = readMatrix("./dbadillo_mat3.txt")
+mat4 = readMatrix("./dbadillo_mat4.txt")
+mat5 = readMatrix("./dbadillo_mat5.txt")
+
+#Multiplies two matrices together and then prints to file
+mat11 = multiplyMatrices(mat1,mat1)
+printMatrix('dbadillo_p3_out11.txt',mat11)
+
+mat12 = multiplyMatrices(mat1,mat2)
+printMatrix('dbadillo_p3_out12.txt',mat12)
+
+mat13 = multiplyMatrices(mat1,mat3)
+printMatrix('dbadillo_p3_out13.txt',mat13)
+
+mat14 = multiplyMatrices(mat1,mat4)
+printMatrix('dbadillo_p3_out14.txt',mat14)
+
+mat15 = multiplyMatrices(mat1,mat5)
+printMatrix('dbadillo_p3_out15.txt',mat15)
+
+mat22 = multiplyMatrices(mat2,mat2)
+printMatrix('dbadillo_p3_out22.txt',mat22)
+
+mat23 = multiplyMatrices(mat2,mat3)
+printMatrix('dbadillo_p3_out23.txt',mat23)
+
+mat24 = multiplyMatrices(mat2,mat4)
+printMatrix('dbadillo_p3_out24.txt',mat24)
+
+mat25 = multiplyMatrices(mat2,mat5)
+printMatrix('dbadillo_p3_out25.txt',mat25)
+
+mat33 = multiplyMatrices(mat3,mat3)
+printMatrix('dbadillo_p3_out33.txt',mat33)
+
+mat34 = multiplyMatrices(mat3,mat4)
+printMatrix('dbadillo_p3_out34.txt',mat34)
+
+mat35 = multiplyMatrices(mat3,mat5)
+printMatrix('dbadillo_p3_out35.txt',mat35)
+
+mat44 = multiplyMatrices(mat4,mat4)
+printMatrix('dbadillo_p3_out44.txt',mat44)
+
+mat45 = multiplyMatrices(mat4,mat5)
+printMatrix('dbadillo_p3_out45.txt',mat45)
+
+mat55 = multiplyMatrices(mat5,mat5)
+printMatrix('dbadillo_p3_out55.txt',mat55)
