@@ -1,0 +1,128 @@
+# Darion Badillo
+# Assignment 3 Part A - 2D and 3D Matrix Operations
+# 9/20/2022
+import math
+import numpy as np
+
+##Reads file into a matrix 
+def readMatrix(path):
+
+    ##Creates an array using numpy
+    a = np.loadtxt(path, dtype=float)
+
+    ##Takes last column of A to find vector B
+    b = a[:,[2]]
+
+    ##Deletes last column of A 
+    a = np.delete(a,-1,axis=1)  
+    print('Read in file successfully')
+    
+    return a, b
+
+
+def findingU(A,B):
+    #Calls findDeterminant to calculate matrix and checks whether
+    # or not det equals 0
+    det, equalsZero = findDeterminant(A)
+
+    if equalsZero == False:
+        calculateVector(A,B,det)
+    else:
+        determineConsistency(A,B,det)
+
+#Calculates the determinant of the matrix   
+def findDeterminant(A):
+    a = A[0][0]
+    c = A[1][0]
+    b = A[0][1]
+    d = A[1][1]
+
+    #calculates determinant
+    det = a*d - b*c
+    
+    #Checks if det is 0
+    if det != 0:
+        return det, False
+    else:
+        return det, True
+
+def calculateVector(A,B,det):
+    a = A[0][0]
+    c = A[1][0]
+    b = A[0][1]
+    d = A[1][1]
+    b1 = B[0][0]
+    b2 = B[1][0]
+
+    e = d/det
+    g = -c/det
+    f = -b/det
+    h = a/det
+
+    x1 = e*b1 + f*b2
+    x2 = g*b1 + h*b2
+
+    U = B.copy()
+    
+    U[0][0] = x1
+    U[1][0] = x2
+    printMatrix(U)
+    
+def determineConsistency(A,B,det):
+    a = A[0][0]
+    c = A[1][0]
+    b = A[0][1]
+    d = A[1][1]
+    b1 = B[0][0]
+    b2 = B[1][0]
+
+    #chain of if else statements that check for the consistency of an equation
+    if b1 != 0:
+        x1 = 1
+        x2 = (b1-a)/b
+
+        #checks consistency
+        if (c*x1 + d*x2) != b2:
+            print('System inconsistent', file=f)
+        elif (c*x1 + d*x2) == b2:
+            print('System underdetermined', file=f)
+        
+    elif b == 0 and a != 0:
+        x1 = b1/a
+        x2 = 1
+        
+        #checks consistency
+        if (c*x1 + d*x2) != b2:
+            print('System inconsistent', file=f)
+        elif (c*x1 + d*x2) == b2:
+            print('System underdetermined', file=f)
+        
+    elif b == 0 and a == 0 and b1 != 0:
+        print('System inconsistent', file=f)
+        
+    elif a == 0 and b == 0 and b1 == 0:
+        print('System underdetermined', file=f)
+    
+
+
+#Prints matrix 
+def printMatrix(mat):
+    for row in mat:
+        print(row, file=f)
+    
+    return None
+
+#Asks user for the input file
+fileName = input('Please enter file name (Example: "./test_input_1.txt"\n')
+outputFile = 'dbadillo_partA_' + fileName[2:7] + 'output_' + fileName[-5:] + ''
+
+#Writes to an output file 
+with open(outputFile, 'w') as f:
+    
+    #Define matrix A and Vector B
+    A, B = readMatrix(fileName)
+
+    #Finds vector U (x)
+    findingU(A,B)
+print(f'Outputted to file: {outputFile}')
+
