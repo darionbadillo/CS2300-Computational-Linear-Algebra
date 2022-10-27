@@ -1,0 +1,174 @@
+# Darion Badillo
+# Assignment 3 Part C - 2D and 3D Matrix Operations
+# 9/20/2022
+import math
+import numpy as np
+import decimal as dc
+
+##Reads file into a matrix
+def readMatrix(path):
+
+    ##Creates an array using numpy
+    a = np.loadtxt(path, dtype=float)
+
+    if(len(a) == 2):
+        print('Read in file successfully')
+        return a, 2
+    else:
+        print('Read in file successfully')
+        return a, 3
+
+def findArea(matA, size):
+    #Calculates area using the |determinant * 1/2|
+    if size == 2:
+        area = determinant2D(matA)
+    else:
+        area = findMagnitude3D(matA)
+    return area
+
+def determinant2D(matA):
+    
+    a1 = matA[0][0]
+    b1 = matA[1][0]
+    a2 = matA[0][1]
+    b2 = matA[1][1]
+    a3 = matA[0][2]
+    b3 = matA[1][2]
+
+    #calculates determinant
+    det = (a1*b2) + (b1*a3) + (a2*b3) - (a3*b2) - (b3*a1) - (a2*b1)
+    det = abs(det/2)
+
+    return det
+
+def findMagnitude3D(matA):
+
+    ##Assigns values to individual X Y coordinate variables
+    a1 = matA[0][0]
+    b1 = matA[1][0]
+    c1 = matA[2][0]
+    a2 = matA[0][1]
+    b2 = matA[1][1]
+    c2 = matA[2][1]
+    a3 = matA[0][2]
+    b3 = matA[1][2]
+    c3 = matA[2][2]
+
+    #Creates V vector
+    v1 = a2 - a1
+    v2 = b2 - b1
+    v3 = c2 - c1
+
+    #Creates W vector
+    w1 = a3 - a1
+    w2 = b3 - b1
+    w3 = c3 - c1
+
+    #Cross product of V^W
+    u1 = (v2*w3) - (v3*w2)
+    u1 = u1*u1
+    u2 = (v3*w1) - (v1*w3)
+    u2 = u2*u2
+    u3 = (v1*w2) - (v2*w1)
+    u3 = u3*u3
+
+    magOfU = math.sqrt((u1+u2+u3))
+    area = magOfU/2
+    return area
+
+def findLine(matA,size):
+    #Finds the appropriate method to find distance
+    if size == 2:
+        distance = distanceToLine2D(matA)
+    else:
+        distance = distanceToPlane3D(matA)
+    return distance
+
+def distanceToLine2D(matA):
+    #pull two points from matrix
+    p1 = matA[0][0]
+    p2 = matA[1][0]
+    q1 = matA[0][1]
+    q2 = matA[1][1]
+    r1 = matA[0][2]
+    r2 = matA[1][2]
+
+    #create vector using two points
+    v1 = q1 - p1
+    v2 = q2 - p2
+
+    #find w vector
+    w1 = r1 - p1
+    w2 = r2 - p2
+
+    #Finds magnitudes of vectors V and W
+    magW = math.sqrt((w1*w1)+(w2*w2))
+    magV = math.sqrt((v1*v1)+(v2*v2))
+
+    magVW = magV*magW
+
+    #Dot product of VW
+    vw = (v1*w1) + (v2*w2)
+
+    #Calculates cosTheta
+    cos = vw/magVW
+    cos = cos*cos
+
+    #Calculates sinTheta
+    sin =  math.sqrt(1-cos)
+
+    #Calculates distance
+    d = magW*sin
+    return d
+
+def distanceToPlane3D(matA):
+    #pull two points from matrix
+    p1 = matA[0][0]
+    p2 = matA[1][0]
+    p3 = matA[2][0]
+    q1 = matA[0][1]
+    q2 = matA[1][1]
+    q3 = matA[2][1]
+    r1 = matA[0][2]
+    r2 = matA[1][2]
+    r3 = matA[2][2]
+
+    #Creates V vector
+    v1 = q1 - p1
+    v2 = q2 - p2
+
+    #Finds midpoints
+    m1 = (q1 - p1)/2
+    m2 = (q2 - p2)/2
+    m3 = (q3 - p3)/2
+
+    #Magnitude of V
+    magV = math.sqrt((v1*v1)+(v2*v2))
+
+    #Normal vectors
+    n1 = (q1 - p1)/magV
+    n2 = (q2 - p2)/magV
+    n3 = (q3 - p3)/magV
+
+    #Calculates distance
+    d = (((n1*r1) + (n2*r2) + (n3*r3)) - ((n1*m1) + (n2*m2) + (n3*m3)))
+
+    return d
+
+#Asks user for the input file
+fileName = input('Please enter file name (Example: "./test_input_1.txt" or "./3D_test_input_1.txt"\n')
+matA, size = readMatrix(fileName)
+if size == 2:
+    outputFile = 'dbadillo_partC_' + fileName[2:7] + 'output_' + fileName[-5:] + ''
+else:
+    outputFile = 'dbadillo_partC_' + fileName[2:10] + 'output_' + fileName[-5:] + ''
+
+#Writes to an output file
+with open(outputFile, 'w') as f:
+
+    triangleArea = findArea(matA, size)
+    distance = findLine(matA,size)
+
+    print(round(triangleArea,4), file=f)
+    print(round(distance,4), file=f)
+print(f'Outputted to file: {outputFile}')
