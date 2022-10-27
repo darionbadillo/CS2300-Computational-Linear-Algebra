@@ -1,0 +1,79 @@
+Begin Linear Domination
+Player 1's turn:
+Player 1 plays (1,1) to (5,5)
+[' ', ' ', ' ', ' ', 'X']
+[' ', ' ', ' ', 'X', ' ']
+[' ', ' ', 'X', ' ', ' ']
+[' ', 'X', ' ', ' ', ' ']
+['X', ' ', ' ', ' ', ' ']
+Player 1 Score: 5 	Player 2 Score: 0 
+
+Player 2's turn:
+Player 2 plays (4,3) to (3,4)
+Invalid Move: Perpendicular to existing line
+
+[' ', ' ', ' ', ' ', 'X']
+[' ', ' ', ' ', 'X', ' ']
+[' ', ' ', 'X', ' ', ' ']
+[' ', 'X', ' ', ' ', ' ']
+['X', ' ', ' ', ' ', ' ']
+Player 1 Score: 5 	Player 2 Score: 0 
+
+Player 1's turn:
+Player 1 plays (1,2) to (3,4)
+[' ', ' ', ' ', ' ', 'X']
+[' ', ' ', 'X', 'X', ' ']
+[' ', 'X', 'X', ' ', ' ']
+['X', 'X', ' ', ' ', ' ']
+['X', ' ', ' ', ' ', ' ']
+Player 1 Score: 8 	Player 2 Score: 0 
+
+Player 2's turn:
+Player 2 plays (2,1) to (4,5)
+[' ', ' ', ' ', ' ', 'X']
+[' ', ' ', 'X', 'X', ' ']
+[' ', 'X', 'X', ' ', ' ']
+['X', 'X', 'O', 'O', ' ']
+['X', 'O', 'O', ' ', ' ']
+Player 1 Score: 8 	Player 2 Score: 4 
+
+Player 1's turn:
+Player 1 plays (5,2) to (5,4)
+[' ', ' ', ' ', ' ', 'X']
+[' ', ' ', 'X', 'X', ' ']
+[' ', 'X', 'X', ' ', ' ']
+['X', 'X', 'O', 'O', 'X']
+['X', 'O', 'O', ' ', ' ']
+Player 1 Score: 9 	Player 2 Score: 4 
+
+Player 2's turn:
+Player 2 plays (1,3) to (3,2)
+Invalid Move: Perpendicular to existing line
+
+[' ', ' ', ' ', ' ', 'X']
+[' ', ' ', 'X', 'X', ' ']
+[' ', 'X', 'X', ' ', ' ']
+['X', 'X', 'O', 'O', 'X']
+['X', 'O', 'O', ' ', ' ']
+Player 1 Score: 9 	Player 2 Score: 4 
+
+Player 1's turn:
+Player 1 plays (2,1) to (4,5)
+Invalid Move: Move already exists
+
+[' ', ' ', ' ', ' ', 'X']
+[' ', ' ', 'X', 'X', ' ']
+[' ', 'X', 'X', ' ', ' ']
+['X', 'X', 'O', 'O', 'X']
+['X', 'O', 'O', ' ', ' ']
+Player 1 Score: 9 	Player 2 Score: 4 
+
+Two invalid moves
+[' ', ' ', ' ', ' ', 'X']
+[' ', ' ', 'X', 'X', ' ']
+[' ', 'X', 'X', ' ', ' ']
+['X', 'X', 'O', 'O', 'X']
+['X', 'O', 'O', ' ', ' ']
+Player 1 Score: 9 	Player 2 Score: 4 
+Player 1 wins!
+Game over!
