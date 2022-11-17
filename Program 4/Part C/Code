@@ -1,0 +1,267 @@
+# Darion Badillo
+# Assignment 4 Part B - More in 3D
+# 11/15/2022
+import math
+import numpy as np
+
+##Reads file into a matrix
+def readMatrix(path):
+
+    ##Creates an array using numpy
+    a = np.loadtxt(path, dtype=float)
+
+    #Takes the first row to find eye and removes from array
+    b = a[0]
+    print('Read in file successfully')
+    
+    return a,b
+
+                            #Sub-Part 1
+def pointToPlane(A):
+
+
+    for row in range(len(A)):
+        for column in range(0,len(A[row])):
+            #Chain of ifs to get x points to project
+            #Every third if sends the points through findDistance
+            if column == 0:
+                q1 = A[row][column]
+
+            if column == 1:
+                q2 = A[row][column]
+
+            if column == 2:
+                q3 = A[row][column]
+                q = [q1,q2,q3]
+                
+            if column == 3:
+                n1 = A[row][column]
+                
+            if column == 4:
+                n2 = A[row][column]
+                
+            if column == 5:
+                n3 = A[row][column]
+                n = [n1,n2,n3]
+                
+            if column == 6:
+                x1 = A[row][column]
+                
+            if column == 7:
+                x2 = A[row][column]
+                
+            if column == 8:
+                x3 = A[row][column]
+                x = [x1,x2,x3]
+                
+                distance = findDistance(q,n,x)
+                print(distance,file = f)
+
+
+#Finds the distance
+def findDistance(q,n,x):
+    #Breaks down values
+    q1 = q[0]
+    q2 = q[1]
+    q3 = q[2]
+    n1 = n[0]
+    n2 = n[1]
+    n3 = n[2]
+    x1 = x[0]
+    x2 = x[1]
+    x3 = x[2]
+
+    #checks for zero vector
+    if n1 == 0 and n2 == 0 and n3 == 0:
+        return 'Not valid input'
+
+    else:
+        #breaks down the equation d = t||n|| and t = (-n·q + n·x)/n·n
+        #finds magnitude of N
+        magOfN = math.sqrt((n1*n1) + (n2*n2) + (n3*n3))
+        
+        #n dotted into q
+        nq = (-n1*q1) + (-n2*q2) + (-n3*q3)
+
+        #n dotted into x
+        nx = (n1*x1) + (n2*x2) + (n3*x3)
+
+        #n dotted into n
+        nn = (n1*n1) + (n2*n2) + (n3*n3)
+        
+        t = (nq-nx)/nn
+        d = t*magOfN
+        d = abs(d)
+        d = round(d,2)
+        return d
+
+
+                                #Sub-Part 2
+def intersectionLineTriangle(A,b):
+    #deletes the first row from the matrix
+    A = np.delete(A, (0), axis=0)
+
+    #Determines x and y coords to calculate vector
+    x = [b[0],b[1],b[2]]
+    y = [b[3],b[4],b[5]]
+
+    v1 = y[0] - x[0]
+    v2 = y[1] - x[1]
+    v3 = y[2] - x[2]
+
+    v = [v1,v2,v3]
+
+    for row in range(len(A)):
+        for column in range(0,len(A[row])):
+            #Chain of ifs to get x points to project
+            #Every third if sends the X point through findPointIntersect
+            if column == 0:
+                p1 = A[row][column]
+
+            if column == 1:
+                p2 = A[row][column]
+
+            if column == 2:
+                p3 = A[row][column]
+                p = [p1,p2,p3]
+                
+            if column == 3:
+                q1 = A[row][column]
+                
+            if column == 4:
+                q2 = A[row][column]
+                
+            if column == 5:
+                q3 = A[row][column]
+                q = [q1,q2,q3]
+                
+            if column == 6:
+                r1 = A[row][column]
+                
+            if column == 7:
+                r2 = A[row][column]
+                
+            if column == 8:
+                r3 = A[row][column]
+                r = [r1,r2,r3]
+                
+                intersect = findPointOfIntersect(x,v,p,q,r)
+                print(*intersect,file = f)
+
+
+                                
+#main function that navigates through the calculation of point intersection
+def findPointOfIntersect(x,v,p,q,r):
+
+    #create vector to multiply inverse matrix by
+    vect1 = x[0] - p[0]  
+    vect2 = x[1] - p[1]  
+    vect3 = x[2] - p[2]
+    vector = [vect1,vect2,vect3]
+
+    #Set up 3x3 matrix of three vectors by subtracting points from another
+    #column 1 - Vector W
+    a = q[0] - p[0] 
+    d = q[1] - p[1] 
+    g = q[2] - p[2]
+
+    #column 2 - Vector Z
+    b = r[0] - p[0] 
+    e = r[1] - p[1] 
+    h = r[2] - p[2]
+
+    #column 3 - Vector -V
+    c = -v[0]       
+    f = -v[1]       
+    i = -v[2]
+
+    #determinant equation
+    determinant = (a*e*i) - (a*f*h) - (b*d*i) + (b*f*g) + (c*d*h) - (c*e*g)
+
+    if determinant == 0:
+        return 'Does not intersect'
+
+    else:
+        #solves minor matrice determinant equations and sets up adjoint cofactor matrix
+        minDet1 = e*i - f*h
+        minDet2 = -(b*i - c*h)
+        minDet3 = b*f - c*e
+        minDet4 = -(d*i - f*g)
+        minDet5 = a*i - c*g
+        minDet6 = -(a*f - c*d)
+        minDet7 = d*h - e*g
+        minDet8 = -(a*h - b*g)
+        minDet9 = a*e - b*d
+
+        #Creates for inverse matrix values
+        minDet1 = minDet1/determinant
+        minDet2 = minDet2/determinant
+        minDet3 = minDet3/determinant
+        minDet4 = minDet4/determinant
+        minDet5 = minDet5/determinant
+        minDet6 = minDet6/determinant
+        minDet7 = minDet7/determinant
+        minDet8 = minDet8/determinant
+        minDet9 = minDet9/determinant
+
+        #calculates through inverse matrix values for solved linear answers
+        u1 = (minDet1*vect1) + (minDet4*vect2) + (minDet7*vect3)
+        u2 = (minDet2*vect1) + (minDet5*vect2) + (minDet8*vect3)
+        t = (minDet3*vect1) + (minDet6*vect2) + (minDet9*vect3)
+
+        #Checks if valid intersection
+        if (0 < u1 and u1 < 1):
+            if(0 < u2  and u2 < 1):
+                if((u1 + u2) < 1):
+                    x1 = x[0]
+                    x2 = x[1]
+                    x3 = x[2]
+                    v1 = v[0]
+                    v2 = v[1]
+                    v3 = v[2]
+
+                    #Calculates intersection
+                    intersection1 = x1 + t*v1
+                    intersection2 = x2 + t*v2
+                    intersection3 = x3 + t*v3
+
+                    #Rounds intersection points
+                    intersection1 = round(intersection1,2)
+                    intersection2 = round(intersection2,2)
+                    intersection3 = round(intersection3,2)
+                    
+                    intersection = np.array([intersection1,intersection2,intersection3],dtype = float)
+                    return intersection
+        else:
+            return 'Does not intersect'
+
+            
+#Asks user for the input file
+
+fileName = input('Please enter file name (Example: "./test_input.txt"\n')
+outputFile = 'dbadillo_output_1_C.txt' 
+
+#Define matrix A
+A,b = readMatrix(fileName)
+
+if len(A[0]) == 9:
+
+    #Writes to an output file
+    with open(outputFile, 'w') as f:
+        
+        pointToPlane(A)
+        
+    print(f'Outputted to file: {outputFile}')
+    
+    outputFile = 'dbadillo_output_2_C.txt'
+
+    with open(outputFile, 'w') as f:
+
+        intersectionLineTriangle(A,b)
+
+        
+    print(f'Outputted to file: {outputFile}')
+        
+else:
+    print('Not valid input')
+
