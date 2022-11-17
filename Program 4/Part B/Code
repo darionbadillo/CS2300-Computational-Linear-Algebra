@@ -1,0 +1,222 @@
+# Darion Badillo
+# Assignment 4 Part B - More in 3D
+# 11/15/2022
+import math
+import numpy as np
+
+##Reads file into a matrix
+def readMatrix(path):
+
+    ##Creates an array using numpy
+    a = np.loadtxt(path, dtype=float)
+
+    #Takes the first row to find eye and removes from array
+    b = a[0]
+    a = np.delete(a, (0), axis=0)
+    print('Read in file successfully')
+
+    return a,b
+
+#Iterates through the matrix to navigate through the problem
+def parallelProjection(A,b):
+    q = [b[0],b[1],b[2]]
+    n = [b[3],b[4],b[5]]
+    v = [b[6],b[7],b[8]]
+
+    for row in range(len(A)):
+        for column in range(0,len(A[row])):
+            #Chain of ifs to get x points to project
+            #Every third if sends the X point through pointParallelProjection
+            if column == 0:
+                x1 = A[row][column]
+
+            if column == 1:
+                x2 = A[row][column]
+
+            if column == 2:
+                x3 = A[row][column]
+                x = [x1,x2,x3]
+                projection1 = pointParallelProjection(q,n,v,x)
+                
+            if column == 3:
+                x1 = A[row][column]
+                
+            if column == 4:
+                x2 = A[row][column]
+                
+            if column == 5:
+                x3 = A[row][column]
+                x = [x1,x2,x3]
+                projection2 = pointParallelProjection(q,n,v,x)
+                
+            if column == 6:
+                x1 = A[row][column]
+                
+            if column == 7:
+                x2 = A[row][column]
+                
+            if column == 8:
+                x3 = A[row][column]
+                x = [x1,x2,x3]
+                projection3 = pointParallelProjection(q,n,v,x)
+                
+                print(*projection1,*projection2,*projection3,file = f)
+
+#Calculates equation x′ = x + [([q - x]·n)/v·n]v                
+def pointParallelProjection(q,n,v,x):
+    #Breakds down the given points for ease of calculation
+    q1 = q[0]
+    q2 = q[1]
+    q3 = q[2]
+    v1 = v[0]
+    v2 = v[1]
+    v3 = v[2]
+    n1 = n[0]
+    n2 = n[1]
+    n3 = n[2]
+    x1 = x[0]
+    x2 = x[1]
+    x3 = x[2]
+
+    #array for x' coordinates
+    xPrime = []
+
+    #q-x vector
+    qx1 = q1-x1
+    qx2 = q2-x2
+    qx3 = q3-x3
+
+    #n dotted into qx vector 
+    nqx = n1*qx1 + n2*qx2 + n2*qx2
+
+    #v vector dotted into n vector
+    vn = n1*n1 + v2+n2 + v3+n3
+
+    #Divides the two dot products
+    dvsn = nqx/vn
+
+    #Finds newly created vector 
+    v1 = dvsn*v1
+    v2 = dvsn*v2
+    v3 = dvsn*v3
+
+    #Adds x coordinate to the new vector to find x'
+    xP1 = round(v1+x1,2)
+    xP2 = round(v2+x2,2)
+    xP3 = round(v3+x3,2)
+    
+    xPrime.extend([xP1, xP2, xP3])
+
+    return xPrime
+
+#Iterates through the matrix
+def perspectiveProjection(A,b):
+
+    #Creates q point and normal vector
+    q = [b[0],b[1],b[2]]
+    n = [b[3],b[4],b[5]]
+
+    for row in range(len(A)):
+        for column in range(0,len(A[row])):
+            #Chain of ifs to get x points to project
+            #Every third if sends the X point through pointPerspectiveProjection
+            if column == 0:
+                x1 = A[row][column]
+
+            if column == 1:
+                x2 = A[row][column]
+
+            if column == 2:
+                x3 = A[row][column]
+                x = [x1,x2,x3]
+                projection1 = pointPerspectiveProjection(q,n,x)
+                
+            if column == 3:
+                x1 = A[row][column]
+                
+            if column == 4:
+                x2 = A[row][column]
+                
+            if column == 5:
+                x3 = A[row][column]
+                x = [x1,x2,x3]
+                projection2 = pointPerspectiveProjection(q,n,x)
+                
+            if column == 6:
+                x1 = A[row][column]
+                
+            if column == 7:
+                x2 = A[row][column]
+                
+            if column == 8:
+                x3 = A[row][column]
+                x = [x1,x2,x3]
+                projection3 = pointPerspectiveProjection(q,n,x)
+                
+                print(*projection1,*projection2,*projection3,file = f)
+
+#Solves equation x′ = [q·n/x·n]x
+def pointPerspectiveProjection(q,n,x):
+
+    #Breaks down values into individual values
+    q1 = q[0]
+    q2 = q[1]
+    q3 = q[2]
+    n1 = n[0]
+    n2 = n[1]
+    n3 = n[2]
+    x1 = x[0]
+    x2 = x[1]
+    x3 = x[2]
+
+    xPrime = []
+
+    #q point dotted into normal vector
+    qn = q1*n1 + q2*n2 + q3*n3
+
+    #x point dotted into normal vector
+    xn = x1*n1 + x2+n2 + x3+n3
+
+    #divides both dot products
+    dvsn = qn/xn
+
+    #Multiplies divided dot products by x coordinates to find x'
+    x1 = dvsn*x1
+    x2 = dvsn*x2
+    x3 = dvsn*x3
+
+    xP1 = round(x1,2)
+    xP2 = round(x2,2)
+    xP3 = round(x3,2)
+    
+    xPrime.extend([xP1, xP2, xP3])
+
+    return xPrime
+   
+#Asks user for the input file
+fileName = input('Please enter file name (Example: "./test_input.txt"\n')
+outputFile = 'dbadillo_output_1_B.txt' 
+
+#Define matrix A
+A,b = readMatrix(fileName)
+
+if len(A[0]) == 9:
+
+    #Writes to an output file
+    with open(outputFile, 'w') as f:
+        
+        parallelProjection(A,b)
+        
+    print(f'Outputted to file: {outputFile}')
+
+    outputFile = 'dbadillo_output_2_B.txt'
+    
+    #Writes to an output file
+    with open(outputFile, 'w') as f:
+
+        perspectiveProjection(A,b)
+       
+    print(f'Outputted to file: {outputFile}')
+
+else:
+    print('Not valid input')
