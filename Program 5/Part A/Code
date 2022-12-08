@@ -1,0 +1,136 @@
+# Darion Badillo
+# Assignment 5 Part A - Page Rank Eigenvector
+# 12/06/2022
+import math
+import numpy as np
+import random
+
+##Reads file into a matrix
+def readMatrix(path):
+
+    ##Creates an array using numpy
+    a = np.loadtxt(path, dtype=float)
+
+    print('Read in file successfully')
+
+    return a
+
+##Calculates the eigenvalues and vectors utilizing my implementation of the power method
+def powerAlgorithm(C):
+    N = len(C)
+    r = []
+    
+    #Create estimated eigenvector based off N (size) of matrix
+    for i in range(0,N):
+        if i == 0:
+            r.append(1)
+        else:
+            temp = round(random.random())
+            r.append(temp)
+
+    #Multiply C by r. r will be consistently redifined until the dom eigenvector
+    #is found and by the end of the loop, maxValue should become the eigen value
+    for k in range(0,N):
+        tempVector = []
+        for row in range(len(C)):
+            value = 0
+            for column in range(len(C[row])):
+                matVal = C[row][column]
+                rVal = r[column]
+                value = value + (matVal * rVal)
+                
+                if column == (N-1):
+                    tempVector.append(value)
+                if row == (N-1) and column == (N-1):
+                    maxValue = findLargestValue(tempVector)
+                    r = divideByMax(maxValue,tempVector, r)
+
+    #Turns values found in for loop into more readable values
+    eigenValue = maxValue
+    eigenVector = np.round(r,4)
+
+    #Finds page rank
+    rank = []
+    rank = findRank(eigenVector, rank)
+
+    return eigenVector,rank         
+
+#Finds the largest value that will be sent back to normalize the vector
+def findLargestValue(x):
+    maxValue = 0
+    
+    for i in range(len(x)):
+        if x[i] > maxValue:
+            maxValue = x[i]
+    return maxValue
+
+#Normalizes vector by dividing by the maximum value in vector
+def divideByMax(maxValue,tempVector,r):
+    temp = []
+    
+    for i in range(len(tempVector)):
+        temp.append(tempVector[i]/maxValue)
+
+    return temp
+
+#Finds where the pages rank in order from the largest to smallest eigenVector value
+def findRank(eigenVector,rank):
+
+    tempVect = list(eigenVector)
+    eigenVector = list(eigenVector)
+    place = 0
+
+    #Iterates through tempVect to find the largest value, indexes it for the rank array, and then deletes it
+    for i in range(len(tempVect)):
+        maxRank = 0
+            
+        for j in range(len(tempVect)):
+            if tempVect[j] > maxRank:
+                maxRank = tempVect[j]
+                place = j
+                
+            if j == len(tempVect)-1:
+
+                index = eigenVector.index(maxRank)
+                rank.append(index+1)
+                tempVect.pop(place)          
+
+    return rank
+
+    
+#Asks user for the input file
+fileName = input('Please enter file name (Example: "./input_A.txt"\n')
+outputFile = 'dbadillo_output_A.txt' 
+
+#Define matrix C
+C = readMatrix(fileName)
+
+N = len(C)-1
+sumCheck = True
+negativeCheck = True
+colSum = 0
+for row in range(len(C)):
+    for col in range(len(C[row])):
+        colSum = colSum + C[col][row]
+        if C[col][row] < 0:
+            negativeCheck = False
+        if col == N:
+            if round(colSum,2) != 1.00:
+                sumCheck = False
+            colSum = 0
+
+if sumCheck == True and negativeCheck == True:
+    
+    #Writes to an output file
+    with open(outputFile, 'w') as f:
+        
+        eigenVector,rank = powerAlgorithm(C)
+        
+        #print statements
+        print(*eigenVector, file = f)
+        print(*rank, file = f)
+        
+        print(f'Outputted to file: {outputFile}')
+
+else:
+    print('Invalid input')
