@@ -1,0 +1,157 @@
+# Darion Badillo
+# Assignment 5 Part B - Linear Classifier
+# 12/06/2022
+import math
+import numpy as np
+import random
+
+##Reads file into a matrix
+def readMatrix(path1,path2):
+
+    ##Creates an array using numpy
+    a = np.loadtxt(path1, dtype=float)
+
+    b = np.loadtxt(path2, dtype=float)
+
+    print('Read in file successfully')
+
+    if len(a[0])-1 == len(b[0]):
+        return a, b, True
+
+    else:
+        return a, b, False
+
+##Creates randomly generated weights
+def initializeWeights(trainingSet):
+
+    weights = []
+    for row in range(len(trainingSet)):
+        value = round(random.uniform(-3,3),4)
+        weights.append(value)
+
+    return weights
+
+##Perceptron algorithm
+def trainingAlgorithm(trainingSet,weights):
+    
+    #bias vector given by first column of trainingSet
+    Y = trainingSet[:,0]
+    trainingSet = np.delete(trainingSet, 0, 1)
+    
+    converge = False
+    counter = 0
+    Y1 = []
+
+    #Loops until either the convergence is complete or until the counter breaks 1000
+    while converge != True:
+        counter = counter + 1
+        converge = convergenceCheck(Y, Y1)
+        Y1 = []
+        if counter == 1000:
+            break
+
+        #Loops through the trainingSet matrix utilizing each row to update the weights
+        for row in range(len(trainingSet)):
+            
+            #Resets dot product calculation each new row
+            dotP = 0
+
+            for column in range(len(trainingSet[row])):
+                #dot product of W and X
+                dotP += (trainingSet[row][column] * weights[column])
+
+                #Binary Classifier that will be used to compare to bias
+                if column == len(trainingSet)-1:
+                    if dotP >= 0:
+                        fWX = 1
+                        Y1.append(fWX)
+                        weights = updateWeights(Y[row], fWX, weights, trainingSet[row,:])              
+                    elif dotP < 0:
+                        fWX = 0
+                        Y1.append(fWX)
+                        weights = updateWeights(Y[row], fWX, weights, trainingSet[row,:])
+                        
+    return weights, converge
+
+##Iterates through the weights and updates them based on the bias vector
+def updateWeights(yLabel,fWX,weights, X):
+    
+    #for item in range(len(weights)):
+    error = yLabel - fWX
+    convergeTest = []
+    
+    for item in range(len(weights)):
+        weights[item] = weights[item] + error*X[item]
+
+               
+    return weights
+
+#Checks for convergence by comparing the bias vector to the Y1 vector
+def convergenceCheck(Y, Y1):
+    if not bool(Y1):
+        return False
+    
+    correctCount = len(Y)
+    convergeCount = 0
+    
+    converge = True
+    
+    
+    for item in range(len(Y)):
+        if Y[item] == Y1[item]:
+            convergeCount += 1
+
+    if correctCount == convergeCount:
+        return True
+    else:
+        return False
+
+#Creates a dot product of the data dotted into the weight vector to check for Binary Classification
+def calculateClassifer(data,weights):
+    C = []
+    for row in range(len(data)):
+        dotP = 0
+        for column in range(len(data[row])):
+            dotP += (data[row][column] * weights[column])
+            
+            if column == len(data[0])-1:
+                if dotP >= 0:
+                    C.append(1)
+                elif dotP < 0:
+                    C.append(0)
+    return C, weights
+
+
+#Asks user for the input file
+fileName1 = input('Please enter training file name (Example: "./training_input_B.txt"\n')
+fileName2 = input('Please enter test file name (Example: "./test_input_B.txt"\n')
+outputFile = 'dbadillo_output_B.txt'
+
+#Define matrix C
+trainingSet, dataSet, valid = readMatrix(fileName1, fileName2)
+
+            
+if valid == True:
+    #Writes to an output file
+    with open(outputFile, 'w') as f:
+        
+        weights = initializeWeights(trainingSet)
+
+        weights, converge = trainingAlgorithm(trainingSet,weights)
+
+        if converge == True:
+            C,weights = calculateClassifer(dataSet, weights)
+
+                    #print statements
+            print(*C, file = f)
+            print(*weights, file = f)
+            
+            print(f'Outputted to file: {outputFile}')
+
+            
+        else:
+            #print statements
+            print('Cannot Classify')
+
+else:
+    print('Invalid input')
